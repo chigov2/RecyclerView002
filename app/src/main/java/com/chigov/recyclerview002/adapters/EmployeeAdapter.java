@@ -58,5 +58,4 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.Employ
         return employees.size();
     }
 
-
 }

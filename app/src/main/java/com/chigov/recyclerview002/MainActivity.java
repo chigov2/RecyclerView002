@@ -28,12 +28,21 @@ public class MainActivity extends AppCompatActivity {
         List<Employee> employees = new ArrayList<>();
         Employee employee1 = new Employee();
         Employee employee2 = new Employee();
+        Employee employee3 = new Employee();
+        Employee employee4 = new Employee();
         employee1.setfName("Max");
         employee2.setfName("Ivan");
         employee1.setlName("Ivanov");
         employee2.setlName("Petrov");
+        employee3.setfName("Max");
+        employee4.setfName("Ivan");
+        employee3.setlName("Ivanov");
+        employee4.setlName("Petrov");
+
         employees.add(employee1);
         employees.add(employee2);
+        employees.add(employee3);
+        employees.add(employee4);
         adapter.setEmployees(employees);
     }
 }
