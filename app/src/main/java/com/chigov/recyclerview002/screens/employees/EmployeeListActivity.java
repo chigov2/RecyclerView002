@@ -1,4 +1,4 @@
-package com.chigov.recyclerview002;
+package com.chigov.recyclerview002.screens.employees;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.chigov.recyclerview002.R;
 import com.chigov.recyclerview002.adapters.EmployeeAdapter;
 import com.chigov.recyclerview002.api.ApiFactory;
 import com.chigov.recyclerview002.api.ApiService;
@@ -15,7 +16,6 @@ import com.chigov.recyclerview002.pojo.Employee;
 import com.chigov.recyclerview002.pojo.EmployeeResponse;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -24,11 +24,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class MainActivity extends AppCompatActivity {
+public class EmployeeListActivity extends AppCompatActivity {
     private RecyclerView recyclerViewEmployees;
     private EmployeeAdapter adapter;
-    private Disposable disposable;
-    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,32 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewEmployees.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewEmployees.setAdapter(adapter);
-        ApiFactory apiFactory = ApiFactory.getInstance();
-        ApiService apiService = apiFactory.getApiService();
-        compositeDisposable = new CompositeDisposable();
-        disposable = apiService.getEmployees()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Consumer<EmployeeResponse>() {
-                @Override
-                public void accept(EmployeeResponse employeeResponse) throws Exception {
-                    adapter.setEmployees(employeeResponse.getResponse());
-                }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                Toast.makeText(MainActivity.this, "Error database connection"+ throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.i("test",throwable.getMessage());
-            }
-        });
-        compositeDisposable.add(disposable);
-        //Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
 
     }
     @Override
     protected void onDestroy() {
-        if (compositeDisposable != null){compositeDisposable.dispose();}
-        super.onDestroy();
+                super.onDestroy();
     }
 }
 
