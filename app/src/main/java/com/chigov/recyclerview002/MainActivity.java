@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -25,6 +27,8 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewEmployees;
     private EmployeeAdapter adapter;
+    private Disposable disposable;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +42,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewEmployees.setAdapter(adapter);
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
-        apiService.getEmployees()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<EmployeeResponse>() {
-            @Override
-            public void accept(EmployeeResponse employeeResponse) throws Exception {
-                adapter.setEmployees(employeeResponse.getResponse());
-            }
+        compositeDisposable = new CompositeDisposable();
+        disposable = apiService.getEmployees()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Consumer<EmployeeResponse>() {
+                @Override
+                public void accept(EmployeeResponse employeeResponse) throws Exception {
+                    adapter.setEmployees(employeeResponse.getResponse());
+                }
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
@@ -53,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("test",throwable.getMessage());
             }
         });
+        compositeDisposable.add(disposable);
+
+    }
+    @Override
+    protected void onDestroy() {
+        if (compositeDisposable != null){compositeDisposable.dispose();}
+        super.onDestroy();
     }
 }
 
