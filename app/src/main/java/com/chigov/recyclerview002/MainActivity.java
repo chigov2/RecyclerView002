@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         compositeDisposable.add(disposable);
+        //Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
 
     }
     @Override
