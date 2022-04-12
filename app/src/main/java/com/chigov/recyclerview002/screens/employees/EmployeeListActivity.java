@@ -16,6 +16,7 @@ import com.chigov.recyclerview002.pojo.Employee;
 import com.chigov.recyclerview002.pojo.EmployeeResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -24,44 +25,38 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class EmployeeListActivity extends AppCompatActivity {
+public class EmployeeListActivity extends AppCompatActivity implements EmployeeListView{
     private RecyclerView recyclerViewEmployees;
     private EmployeeAdapter adapter;
+    private EmployeeListPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        presenter = new EmployeeListPresenter(this);
         recyclerViewEmployees = findViewById(R.id.recyclerViewEmployee);
         adapter = new EmployeeAdapter();
         adapter.setEmployees(new ArrayList<Employee>());
 
         recyclerViewEmployees.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewEmployees.setAdapter(adapter);
-
+        presenter.loadData();
     }
+
     @Override
     protected void onDestroy() {
-                super.onDestroy();
+        presenter.disposeDisposable();
+        super.onDestroy();
+    }
+
+    @Override
+    public void showData(List<Employee> employees) {
+        adapter.setEmployees(employees);
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(this, "Error connecting to DataBase", Toast.LENGTH_SHORT).show();
     }
 }
-
-//    List<Employee> employees = new ArrayList<>();
-//    Employee employee1 = new Employee();
-//    Employee employee2 = new Employee();
-//    Employee employee3 = new Employee();
-//    Employee employee4 = new Employee();
-//        employee1.setfName("Max");
-//                employee2.setfName("Ivan");
-//                employee1.setlName("Ivanov");
-//                employee2.setlName("Petrov");
-//                employee3.setfName("Max");
-//                employee4.setfName("Ivan");
-//                employee3.setlName("Ivanov");
-//                employee4.setlName("Petrov");
-//
-//                employees.add(employee1);
-//                employees.add(employee2);
-//                employees.add(employee3);
-//                employees.add(employee4);
-//                adapter.setEmployees(employees);

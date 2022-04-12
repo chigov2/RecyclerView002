@@ -16,6 +16,12 @@ import io.reactivex.schedulers.Schedulers;
 public class EmployeeListPresenter {
     private Disposable disposable;
     private CompositeDisposable compositeDisposable;
+    private EmployeeListView view;
+
+    public EmployeeListPresenter(EmployeeListView view) {
+        this.view = view;
+    }
+
     public void loadData(){
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
@@ -26,12 +32,12 @@ public class EmployeeListPresenter {
                 .subscribe(new Consumer<EmployeeResponse>() {
                     @Override
                     public void accept(EmployeeResponse employeeResponse) throws Exception {
-
+                        view.showData(employeeResponse.getResponse());
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        view.showError();
                     }
                 });
         compositeDisposable.add(disposable);
